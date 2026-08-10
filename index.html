@@ -665,6 +665,7 @@
                     <div class="radio-group">
                         <label><input type="radio" name="categoria" value="Tubos"> Tubos</label>
                         <label><input type="radio" name="categoria" value="Conexões" checked> Conexões</label>
+                        <label><input type="radio" name="categoria" value="Mista"> Mista</label>
                     </div>
                 </div>
             </div>
@@ -708,27 +709,7 @@
             </div>
 
             <div class="audit-item">
-                <label for="clienteEspecial">4. Cliente especial observado pelo conferente? (Peso 2)</label>
-                <select id="clienteEspecial" name="clienteEspecial" class="behavioral-field" required>
-                    <option value="">Selecione...</option>
-                    <option value="Sim">Sim</option>
-                    <option value="Não">Não</option>
-                    <option value="N/A">N/A</option>
-                </select>
-            </div>
-
-            <div class="audit-item">
-                <label for="itensOrganizados">5. Itens organizados no carrinho de checkout? (Peso 1)</label>
-                <select id="itensOrganizados" name="itensOrganizados" class="behavioral-field" required>
-                    <option value="">Selecione...</option>
-                    <option value="Sim">Sim</option>
-                    <option value="Não">Não</option>
-                    <option value="N/A">N/A</option>
-                </select>
-            </div>
-
-            <div class="audit-item">
-                <label for="identificacaoCarga">6. Identificação de carga preenchida corretamente? (Peso 1)</label>
+                <label for="identificacaoCarga">4. Identificação de carga preenchida corretamente? (Peso 1)</label>
                 <select id="identificacaoCarga" name="identificacaoCarga" class="behavioral-field" required>
                     <option value="">Selecione...</option>
                     <option value="Sim">Sim</option>
@@ -738,7 +719,7 @@
             </div>
 
             <div class="audit-item">
-                <label for="materialDisponivelDoca">7. Material completo disponível em doca? (Peso 2)</label>
+                <label for="materialDisponivelDoca">5. Material completo disponível em doca? (Peso 2)</label>
                 <select id="materialDisponivelDoca" name="materialDisponivelDoca" class="behavioral-field" required>
                     <option value="">Selecione...</option>
                     <option value="Sim">Sim</option>
@@ -748,7 +729,7 @@
             </div>
 
             <div class="audit-item">
-                <label for="docaOrganizada">8. Doca organizada sem mistura de pedidos? (Peso 2)</label>
+                <label for="docaOrganizada">6. Doca organizada sem mistura de pedidos? (Peso 2)</label>
                 <select id="docaOrganizada" name="docaOrganizada" class="behavioral-field" required>
                     <option value="">Selecione...</option>
                     <option value="Sim">Sim</option>
@@ -758,27 +739,7 @@
             </div>
 
             <div class="audit-item">
-                <label for="pedidosIdentificados">9. Pedidos identificados corretamente? (Peso 2)</label>
-                <select id="pedidosIdentificados" name="pedidosIdentificados" class="behavioral-field" required>
-                    <option value="">Selecione...</option>
-                    <option value="Sim">Sim</option>
-                    <option value="Não">Não</option>
-                    <option value="N/A">N/A</option>
-                </select>
-            </div>
-
-            <div class="audit-item">
-                <label for="cargaPrazoPreparacao">10. Carga dentro do prazo de preparação? (Peso 1)</label>
-                <select id="cargaPrazoPreparacao" name="cargaPrazoPreparacao" class="behavioral-field" required>
-                    <option value="">Selecione...</option>
-                    <option value="Sim">Sim</option>
-                    <option value="Não">Não</option>
-                    <option value="N/A">N/A</option>
-                </select>
-            </div>
-
-            <div class="audit-item">
-                <label for="conferenciaOrdemRomaneio">11. Conferência realizada na ordem do romaneio? (Peso 2)</label>
+                <label for="conferenciaOrdemRomaneio">7. Conferência realizada na ordem do romaneio? (Peso 2)</label>
                 <select id="conferenciaOrdemRomaneio" name="conferenciaOrdemRomaneio" class="behavioral-field" required>
                     <option value="">Selecione...</option>
                     <option value="Sim">Sim</option>
@@ -788,7 +749,7 @@
             </div>
 
             <div class="audit-item">
-                <label for="caixaSacoConservacao">12. Caixa/Saco em bom estado de conservação? (Peso 2)</label>
+                <label for="caixaSacoConservacao">8. Caixa/Saco em bom estado de conservação? (Peso 2)</label>
                 <select id="caixaSacoConservacao" name="caixaSacoConservacao" class="behavioral-field" required>
                     <option value="">Selecione...</option>
                     <option value="Sim">Sim</option>
@@ -798,8 +759,18 @@
             </div>
 
             <div class="audit-item">
-                <label for="produtoEmbalado">13. Produto devidamente embalado? (Peso 2)</label>
-                <select id="produtoEmbalado" name="produtoEmbalado" class="behavioral-field" required>
+                <label for="procedimentoPadrao">9. O conferente seguiu o procedimento padrão definido pela Krona? (Peso 3 - Crítico)</label>
+                <select id="procedimentoPadrao" name="procedimentoPadrao" class="behavioral-field" required>
+                    <option value="">Selecione...</option>
+                    <option value="Sim">Sim</option>
+                    <option value="Não">Não</option>
+                    <option value="N/A">N/A</option>
+                </select>
+            </div>
+
+            <div class="audit-item">
+                <label for="equipeResponsiva">10. A equipe é responsiva em relação às ordens do conferente? (Peso 2)</label>
+                <select id="equipeResponsiva" name="equipeResponsiva" class="behavioral-field" required>
                     <option value="">Selecione...</option>
                     <option value="Sim">Sim</option>
                     <option value="Não">Não</option>
@@ -986,13 +957,30 @@
     document.getElementById('data').valueAsDate = new Date();
 
     // INICIAR AUDITORIA MANUALMENTE
-    function startAudit() {
-        const currentYear = new Date().getFullYear();
-        let currentSeq = getAuditSeq();
+    async function startAudit() {
+        const btn = document.getElementById('btnStartAudit');
+        btn.disabled = true;
+        btn.textContent = '⏳ Gerando ID da auditoria...';
 
-        const formattedSeq = String(currentSeq).padStart(4, '0');
-        const auditId = `AUD${currentYear}/${formattedSeq}`;
-        
+        let auditId;
+        try {
+            const resposta = await fetch(GOOGLE_SCRIPT_URL + '?action=novoId');
+            if (!resposta.ok) throw new Error('Resposta não OK do servidor');
+            const json = await resposta.json();
+            if (!json || json.status !== 'success' || !json.auditId) {
+                throw new Error('Resposta inválida do servidor');
+            }
+            auditId = json.auditId;
+        } catch (err) {
+            // Sem internet ou servidor indisponível: usa a contagem local deste dispositivo
+            // como reserva, apenas para não travar o início da auditoria.
+            console.warn('Não foi possível obter o ID sequencial do servidor, usando contagem local como reserva.', err);
+            const currentYear = new Date().getFullYear();
+            const currentSeq = getAuditSeq();
+            const formattedSeq = String(currentSeq).padStart(4, '0');
+            auditId = `AUD${currentYear}/${formattedSeq}`;
+        }
+
         document.getElementById('auditIdDisplay').textContent = auditId;
         document.getElementById('auditId').value = auditId;
 
@@ -1007,8 +995,6 @@
         document.getElementById('auditFields').disabled = false;
 
         // Atualizar estado do botão
-        const btn = document.getElementById('btnStartAudit');
-        btn.disabled = true;
         btn.textContent = '⏱ Auditoria em Andamento';
         btn.style.backgroundColor = '#64748b';
 
@@ -1225,16 +1211,13 @@
         { id: 'contagemFisica', weight: 3, label: '1. Contagem física do material realizada?', weightLabel: 'Peso 3 (Crítico)' },
         { id: 'caixasLacradas', weight: 2, label: '2. Caixas/Ráfias devidamente lacradas e etiquetadas', weightLabel: 'Peso 2' },
         { id: 'caixasPosicionadas', weight: 2, label: '3. Caixas/Ráfias posicionadas de forma organizada no Pallet/Aramado', weightLabel: 'Peso 2' },
-        { id: 'clienteEspecial', weight: 2, label: '4. Cliente especial observado pelo conferente?', weightLabel: 'Peso 2' },
-        { id: 'itensOrganizados', weight: 1, label: '5. Itens organizados no carrinho de checkout?', weightLabel: 'Peso 1' },
-        { id: 'identificacaoCarga', weight: 1, label: '6. Identificação de carga preenchida corretamente?', weightLabel: 'Peso 1' },
-        { id: 'materialDisponivelDoca', weight: 2, label: '7. Material completo disponível em doca?', weightLabel: 'Peso 2' },
-        { id: 'docaOrganizada', weight: 2, label: '8. Doca organizada sem mistura de pedidos?', weightLabel: 'Peso 2' },
-        { id: 'pedidosIdentificados', weight: 2, label: '9. Pedidos identificados corretamente?', weightLabel: 'Peso 2' },
-        { id: 'cargaPrazoPreparacao', weight: 1, label: '10. Carga dentro do prazo de preparação?', weightLabel: 'Peso 1' },
-        { id: 'conferenciaOrdemRomaneio', weight: 2, label: '11. Conferência realizada na ordem do romaneio?', weightLabel: 'Peso 2' },
-        { id: 'caixaSacoConservacao', weight: 2, label: '12. Caixa/Saco em bom estado de conservação?', weightLabel: 'Peso 2' },
-        { id: 'produtoEmbalado', weight: 2, label: '13. Produto devidamente embalado?', weightLabel: 'Peso 2' }
+        { id: 'identificacaoCarga', weight: 1, label: '4. Identificação de carga preenchida corretamente?', weightLabel: 'Peso 1' },
+        { id: 'materialDisponivelDoca', weight: 2, label: '5. Material completo disponível em doca?', weightLabel: 'Peso 2' },
+        { id: 'docaOrganizada', weight: 2, label: '6. Doca organizada sem mistura de pedidos?', weightLabel: 'Peso 2' },
+        { id: 'conferenciaOrdemRomaneio', weight: 2, label: '7. Conferência realizada na ordem do romaneio?', weightLabel: 'Peso 2' },
+        { id: 'caixaSacoConservacao', weight: 2, label: '8. Caixa/Saco em bom estado de conservação?', weightLabel: 'Peso 2' },
+        { id: 'procedimentoPadrao', weight: 3, label: '9. O conferente seguiu o procedimento padrão definido pela Krona?', weightLabel: 'Peso 3 (Crítico)' },
+        { id: 'equipeResponsiva', weight: 2, label: '10. A equipe é responsiva em relação às ordens do conferente?', weightLabel: 'Peso 2' }
     ];
 
     function calculateLiveScore() {
