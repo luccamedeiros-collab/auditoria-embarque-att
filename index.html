@@ -903,6 +903,7 @@
         </fieldset>
         
         <div id="statusMessage" class="status-message"></div>
+        <div id="whatsappShareContainer" style="margin-top: 10px;"></div>
     </form>
 </div>
 
@@ -1748,10 +1749,14 @@
         .then((responseText) => {
             // Alguns retornos de Apps Script trazem um JSON com {"status":"error", ...}
             // mesmo com HTTP 200 — tenta detectar esse caso antes de confirmar sucesso.
+            let linkPdfRecebido = '';
             try {
                 const parsed = JSON.parse(responseText);
                 if (parsed && (parsed.status === 'error' || parsed.success === false)) {
                     throw new Error(parsed.message || 'O servidor reportou uma falha ao salvar os dados.');
+                }
+                if (parsed && parsed.linkPdf) {
+                    linkPdfRecebido = parsed.linkPdf;
                 }
             } catch (jsonErr) {
                 // Resposta não é JSON (ex: texto simples "OK") — segue normalmente como sucesso
@@ -1767,6 +1772,17 @@
 
             statusMsg.className = 'status-message success';
             statusMsg.textContent = `Auditoria enviada com sucesso! ID: ${data.auditId} | Tempo: ${data.tempoTotal}`;
+
+            // Botão para compartilhar o relatório por WhatsApp (se o PDF foi gerado com sucesso)
+            const whatsappContainer = document.getElementById('whatsappShareContainer');
+            if (linkPdfRecebido) {
+                const mensagem = `Relatório de Auditoria ${data.auditId}\nUnidade: ${data.unidade || '-'} | Score: ${data.scoreComportamentalPct || '-'}\nPDF: ${linkPdfRecebido}`;
+                const urlWhatsapp = 'https://wa.me/?text=' + encodeURIComponent(mensagem);
+                whatsappContainer.innerHTML = `<a href="${urlWhatsapp}" target="_blank" rel="noopener" style="display:inline-block; background:#25D366; color:#fff; padding:10px 20px; border-radius:5px; text-decoration:none; font-weight:bold;">Enviar por WhatsApp</a>`;
+            } else {
+                whatsappContainer.innerHTML = '';
+            }
+
             document.getElementById('auditForm').reset();
             document.getElementById('divergenciasContainer').innerHTML = '';
             document.getElementById('planosAcaoContainer').innerHTML = '';
@@ -1801,6 +1817,7 @@
             console.error(error);
             statusMsg.className = 'status-message error';
             statusMsg.textContent = `Não foi possível confirmar o envio (${error.message}). Os dados NÃO foram enviados — o rascunho desta auditoria continua salvo neste dispositivo, tente enviar novamente.`;
+            document.getElementById('whatsappShareContainer').innerHTML = '';
             btnSubmit.disabled = false;
             // Propositalmente NÃO reseta o formulário nem apaga o rascunho aqui,
             // já que não há confirmação de que os dados chegaram ao servidor.
