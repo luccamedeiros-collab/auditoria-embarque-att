@@ -906,7 +906,7 @@
 
     const MOTIVOS_MACRO = ["Falta de itens", "Avaria", "Furo de estoque", "Troca de itens", "Sobra de itens", "Colagem incorreta", "Outro"];
     const MOTIVOS_MICRO = ["Etiqueta errada", "Checkout montado errado", "Faltando itens", "Tubos avariados", "Material sobrando", "Erro de produção", "Sobrando itens", "Corte virtual", "Material trocado", "Colagem incorreta Zona 05", "Colagem incorreta Zona 06", "Outro"];
-    const LISTA_COLABORADORES = ["Elton", "Edson", "Fabiano", "Vagnel", "Rejane", "Hernesto", "Anna", "Vanusa"];
+    const LISTA_COLABORADORES = ["Aline", "Délio", "Edilson", "Edson", "Eduardo", "Eduardo P.", "Elton", "Fabiano", "Felipe", "Fernando", "Gabriel", "Gustavo", "Igor", "Ismael", "Jaderson", "Juliano", "Kamila", "Luiz Carlos da Rocha", "Marlon", "Paulo Roberto", "Renato", "Ruben Martinez", "Taberton", "Thallys", "Vagnel", "Vanusa"];
 
     let selectedAuditPhotos = [];
     let auditStartTime = null;
@@ -1275,7 +1275,9 @@
             <select class="select-responsavel" name="responsavelErro" style="flex: 1;">
                 <option value="">Selecione o Responsável...</option>
                 ${LISTA_COLABORADORES.map(c => `<option value="${c}">${c}</option>`).join('')}
+                <option value="__outro__">Outro (digitar nome)</option>
             </select>
+            <input type="text" class="input-responsavel-outro" placeholder="Digite o nome..." style="flex: 1; display: none;">
             <select class="select-erro-relacionado" name="erroRelacionado" style="flex: 1;">
                 <option value="">Erro Relacionado...</option>
                 ${MOTIVOS_MACRO.map(m => `<option value="${m}">${m}</option>`).join('')}
@@ -1283,9 +1285,29 @@
             <button type="button" class="btn-remove" onclick="removeResponsavelRow(this)">X</button>
         `;
         container.appendChild(div);
-        div.querySelector('.select-responsavel').addEventListener('change', salvarRascunho);
+        const selectResponsavel = div.querySelector('.select-responsavel');
+        const inputOutro = div.querySelector('.input-responsavel-outro');
+        selectResponsavel.addEventListener('change', function () {
+            const ehOutro = this.value === '__outro__';
+            inputOutro.style.display = ehOutro ? 'block' : 'none';
+            if (ehOutro) {
+                inputOutro.focus();
+            } else {
+                inputOutro.value = '';
+            }
+            salvarRascunho();
+        });
+        inputOutro.addEventListener('input', salvarRascunho);
         div.querySelector('.select-erro-relacionado').addEventListener('change', salvarRascunho);
         salvarRascunho();
+    }
+
+    function resolverNomeResponsavel(row) {
+        const select = row.querySelector('.select-responsavel');
+        if (select.value === '__outro__') {
+            return row.querySelector('.input-responsavel-outro').value.trim();
+        }
+        return select.value;
     }
 
     function removeResponsavelRow(button) {
@@ -1575,7 +1597,7 @@
         }));
 
         const responsaveis = Array.from(document.querySelectorAll('.responsavel-row')).map(row => ({
-            nome: row.querySelector('.select-responsavel').value,
+            nome: resolverNomeResponsavel(row),
             erro: row.querySelector('.select-erro-relacionado').value
         }));
 
@@ -1694,7 +1716,16 @@
         (rascunho.responsaveis || []).forEach(r => {
             addResponsavelRow();
             const row = document.querySelector('#responsaveisContainer .responsavel-row:last-child');
-            row.querySelector('.select-responsavel').value = r.nome || '';
+            const select = row.querySelector('.select-responsavel');
+            const inputOutro = row.querySelector('.input-responsavel-outro');
+            const nomeConhecido = LISTA_COLABORADORES.includes(r.nome);
+            if (r.nome && !nomeConhecido) {
+                select.value = '__outro__';
+                inputOutro.style.display = 'block';
+                inputOutro.value = r.nome;
+            } else {
+                select.value = r.nome || '';
+            }
             row.querySelector('.select-erro-relacionado').value = r.erro || '';
         });
 
@@ -1857,7 +1888,7 @@
         const listResponsaveis = [];
         if (data.divergencia === 'Sim') {
             document.querySelectorAll('.responsavel-row').forEach(row => {
-                const nome = row.querySelector('.select-responsavel').value;
+                const nome = resolverNomeResponsavel(row);
                 const erro = row.querySelector('.select-erro-relacionado').value;
                 if (nome || erro) listResponsaveis.push({ nome, erro });
             });
