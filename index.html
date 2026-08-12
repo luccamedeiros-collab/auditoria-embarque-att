@@ -520,14 +520,19 @@
         <button type="button" class="btn-clear-draft" onclick="limparRascunho()">🗑 Descartar e começar do zero</button>
     </div>
 
+    <!-- Auditorias pendentes salvas na nuvem, disponíveis para continuar de qualquer aparelho -->
+    <div id="pendentesNuvemContainer" style="display:none; margin-bottom: 12px;"></div>
+
     <!-- Barra com ID, Cronômetro e Botão de Início -->
     <div class="audit-tracker-bar">
         <div>ID Auditoria: <span id="auditIdDisplay" class="tracker-badge">---</span></div>
         <div class="tracker-controls">
             <button type="button" id="btnStartAudit" class="btn-start-audit" onclick="startAudit()">▶ Iniciar Auditoria</button>
+            <button type="button" id="btnSalvarNuvem" onclick="salvarProgressoNaNuvem()" style="display:none;">☁ Salvar progresso na nuvem</button>
             <div>Tempo em Auditoria: <span id="timerDisplay" class="timer-badge">00:00:00</span></div>
         </div>
     </div>
+    <div id="statusNuvemMsg" style="font-size: 11px; margin-top: 4px;"></div>
 
     <form id="auditForm">
         <!-- Campos Ocultos para envio -->
@@ -863,7 +868,7 @@
                         </svg>
                     </div>
                     <span class="upload-title">Anexar ou capturar fotos</span>
-                    <span class="upload-subtitle">Clique para selecionar ou usar a câmera (PNG, JPG, WEBP)</span>
+                    <span class="upload-subtitle">Clique para selecionar ou usar a câmera (PNG, JPG, WEBP) — até 30 fotos por auditoria</span>
                 </label>
                 <input type="file" id="auditPhotos" accept="image/*" multiple style="display: none;" onchange="handlePhotoUpload(event)">
                 
@@ -942,6 +947,11 @@
     // Chave usada para salvar o rascunho da auditoria em andamento
     const DRAFT_STORAGE_KEY = 'auditoriaRascunhoEmAndamento';
 
+    // Limites e configuração de fotos da auditoria
+    const MAX_FOTOS_POR_AUDITORIA = 30;
+    const FOTO_MAX_DIMENSAO = 1600; // pixels, no lado maior da imagem
+    const FOTO_QUALIDADE_JPEG = 0.72; // 0 a 1 — reduz o tamanho do arquivo mantendo boa legibilidade
+
     let isRestoringRascunho = false;
 
     function debounce(fn, delayMs) {
@@ -956,29 +966,52 @@
 
     document.getElementById('data').valueAsDate = new Date();
 
+    // Pré-busca o próximo ID assim que a página carrega, para não deixar
+    // o usuário esperando na hora de clicar em "Iniciar Auditoria".
+    let auditIdPreCarregadoPromise = fetch(GOOGLE_SCRIPT_URL + '?action=novoId')
+        .then(resposta => {
+            if (!resposta.ok) throw new Error('Resposta não OK do servidor');
+            return resposta.json();
+        })
+        .then(json => {
+            if (!json || json.status !== 'success' || !json.auditId) {
+                throw new Error('Resposta inválida do servidor');
+            }
+            return json.auditId;
+        })
+        .catch(err => {
+            console.warn('Pré-carregamento do ID falhou, será tentado novamente ao iniciar a auditoria.', err);
+            return null;
+        });
+
     // INICIAR AUDITORIA MANUALMENTE
     async function startAudit() {
         const btn = document.getElementById('btnStartAudit');
         btn.disabled = true;
         btn.textContent = '⏳ Gerando ID da auditoria...';
 
-        let auditId;
-        try {
-            const resposta = await fetch(GOOGLE_SCRIPT_URL + '?action=novoId');
-            if (!resposta.ok) throw new Error('Resposta não OK do servidor');
-            const json = await resposta.json();
-            if (!json || json.status !== 'success' || !json.auditId) {
-                throw new Error('Resposta inválida do servidor');
+        let auditId = await auditIdPreCarregadoPromise;
+
+        if (!auditId) {
+            // Pré-carregamento não deu certo (ex: página aberta há muito tempo, ou sem internet
+            // no momento do carregamento) — tenta buscar agora, na hora do clique.
+            try {
+                const resposta = await fetch(GOOGLE_SCRIPT_URL + '?action=novoId');
+                if (!resposta.ok) throw new Error('Resposta não OK do servidor');
+                const json = await resposta.json();
+                if (!json || json.status !== 'success' || !json.auditId) {
+                    throw new Error('Resposta inválida do servidor');
+                }
+                auditId = json.auditId;
+            } catch (err) {
+                // Sem internet ou servidor indisponível: usa a contagem local deste dispositivo
+                // como reserva, apenas para não travar o início da auditoria.
+                console.warn('Não foi possível obter o ID sequencial do servidor, usando contagem local como reserva.', err);
+                const currentYear = new Date().getFullYear();
+                const currentSeq = getAuditSeq();
+                const formattedSeq = String(currentSeq).padStart(4, '0');
+                auditId = `AUD${currentYear}/${formattedSeq}`;
             }
-            auditId = json.auditId;
-        } catch (err) {
-            // Sem internet ou servidor indisponível: usa a contagem local deste dispositivo
-            // como reserva, apenas para não travar o início da auditoria.
-            console.warn('Não foi possível obter o ID sequencial do servidor, usando contagem local como reserva.', err);
-            const currentYear = new Date().getFullYear();
-            const currentSeq = getAuditSeq();
-            const formattedSeq = String(currentSeq).padStart(4, '0');
-            auditId = `AUD${currentYear}/${formattedSeq}`;
         }
 
         document.getElementById('auditIdDisplay').textContent = auditId;
@@ -997,6 +1030,8 @@
         // Atualizar estado do botão
         btn.textContent = '⏱ Auditoria em Andamento';
         btn.style.backgroundColor = '#64748b';
+        document.getElementById('btnSalvarNuvem').style.display = 'inline-block';
+        document.getElementById('pendentesNuvemContainer').style.display = 'none';
 
         salvarRascunho();
     }
@@ -1023,16 +1058,55 @@
     // Manipulação e Preview de Fotos
     let photoIdCounter = 0;
 
-    function handlePhotoUpload(event) {
-        const files = Array.from(event.target.files);
-        const grid = document.getElementById('photoPreviewGrid');
-
-        files.forEach(file => {
-            if (!file.type.startsWith('image/')) return;
-
+    function comprimirImagem(file) {
+        return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = (e) => {
-                const base64Data = e.target.result;
+                const img = new Image();
+                img.onload = () => {
+                    let width = img.width;
+                    let height = img.height;
+                    if (width > height && width > FOTO_MAX_DIMENSAO) {
+                        height = Math.round(height * (FOTO_MAX_DIMENSAO / width));
+                        width = FOTO_MAX_DIMENSAO;
+                    } else if (height >= width && height > FOTO_MAX_DIMENSAO) {
+                        width = Math.round(width * (FOTO_MAX_DIMENSAO / height));
+                        height = FOTO_MAX_DIMENSAO;
+                    }
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    resolve(canvas.toDataURL('image/jpeg', FOTO_QUALIDADE_JPEG));
+                };
+                img.onerror = () => reject(new Error('Não foi possível carregar a imagem.'));
+                img.src = e.target.result;
+            };
+            reader.onerror = () => reject(new Error('Não foi possível ler o arquivo.'));
+            reader.readAsDataURL(file);
+        });
+    }
+
+    async function handlePhotoUpload(event) {
+        const files = Array.from(event.target.files).filter(f => f.type.startsWith('image/'));
+        const grid = document.getElementById('photoPreviewGrid');
+
+        if (selectedAuditPhotos.length >= MAX_FOTOS_POR_AUDITORIA) {
+            alert(`Limite de ${MAX_FOTOS_POR_AUDITORIA} fotos por auditoria atingido. Remova alguma foto antes de adicionar novas.`);
+            event.target.value = '';
+            return;
+        }
+
+        const espacoDisponivel = MAX_FOTOS_POR_AUDITORIA - selectedAuditPhotos.length;
+        const arquivosParaProcessar = files.slice(0, espacoDisponivel);
+        if (files.length > arquivosParaProcessar.length) {
+            alert(`Só é possível adicionar mais ${espacoDisponivel} foto(s) nesta auditoria (limite de ${MAX_FOTOS_POR_AUDITORIA}). As fotos extras selecionadas foram ignoradas.`);
+        }
+
+        for (const file of arquivosParaProcessar) {
+            try {
+                const base64Data = await comprimirImagem(file);
                 const photoId = 'photo_' + (photoIdCounter++) + '_' + Date.now();
                 selectedAuditPhotos.push({ id: photoId, src: base64Data, caption: '' });
 
@@ -1048,9 +1122,11 @@
                 `;
                 grid.appendChild(card);
                 salvarRascunho();
-            };
-            reader.readAsDataURL(file);
-        });
+            } catch (err) {
+                console.error('Erro ao processar foto:', err);
+            }
+        }
+
         event.target.value = '';
     }
 
@@ -1528,15 +1604,17 @@
         location.reload();
     }
 
-    function restaurarRascunho() {
-        if (!storageAvailable) return;
-        let rascunho;
-        try {
-            const raw = localStorage.getItem(DRAFT_STORAGE_KEY);
-            if (!raw) return;
-            rascunho = JSON.parse(raw);
-        } catch (e) {
-            return;
+    function restaurarRascunho(rascunhoExterno) {
+        let rascunho = rascunhoExterno;
+        if (!rascunho) {
+            if (!storageAvailable) return;
+            try {
+                const raw = localStorage.getItem(DRAFT_STORAGE_KEY);
+                if (!raw) return;
+                rascunho = JSON.parse(raw);
+            } catch (e) {
+                return;
+            }
         }
 
         if (!rascunho || !rascunho.campos || !rascunho.campos.auditId) return;
@@ -1560,6 +1638,8 @@
         btnStart.disabled = true;
         btnStart.textContent = '⏱ Auditoria em Andamento';
         btnStart.style.backgroundColor = '#64748b';
+        document.getElementById('btnSalvarNuvem').style.display = 'inline-block';
+        document.getElementById('pendentesNuvemContainer').style.display = 'none';
 
         // Restaura campos simples (texto, data, select, textarea, rádio)
         Object.keys(rascunho.campos).forEach(nome => {
@@ -1635,7 +1715,82 @@
         banner.style.display = 'flex';
     }
 
+    async function salvarProgressoNaNuvem() {
+        const btn = document.getElementById('btnSalvarNuvem');
+        const statusMsg = document.getElementById('statusNuvemMsg');
+        btn.disabled = true;
+        const textoOriginal = btn.textContent;
+        btn.textContent = '☁ Salvando...';
+        statusMsg.textContent = '';
+
+        try {
+            const rascunho = coletarRascunho();
+            const resposta = await fetch(GOOGLE_SCRIPT_URL + '?action=salvarProgresso', {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(rascunho)
+            });
+            if (!resposta.ok) throw new Error('Resposta não OK do servidor (' + resposta.status + ')');
+            const json = await resposta.json();
+            if (!json || json.status !== 'success') {
+                throw new Error((json && json.message) || 'Resposta inválida do servidor');
+            }
+            statusMsg.style.color = '#16a34a';
+            statusMsg.textContent = 'Progresso salvo na nuvem às ' + new Date(json.salvoEm).toLocaleTimeString('pt-BR') + '. Já pode continuar de qualquer outro aparelho.';
+        } catch (err) {
+            console.error(err);
+            statusMsg.style.color = '#dc2626';
+            statusMsg.textContent = 'Não foi possível salvar na nuvem (' + err.message + '). O rascunho continua salvo normalmente neste aparelho.';
+        } finally {
+            btn.disabled = false;
+            btn.textContent = textoOriginal;
+        }
+    }
+
+    async function carregarListaPendentesNuvem() {
+        try {
+            const resposta = await fetch(GOOGLE_SCRIPT_URL + '?action=listarPendentes');
+            if (!resposta.ok) return;
+            const json = await resposta.json();
+            if (!json || json.status !== 'success' || !Array.isArray(json.pendentes) || json.pendentes.length === 0) return;
+
+            const container = document.getElementById('pendentesNuvemContainer');
+            const itens = json.pendentes.map(p => {
+                const salvoEmTexto = p.salvoEm ? new Date(p.salvoEm).toLocaleString('pt-BR') : '-';
+                return `<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 10px; border-bottom:1px solid #e2e8f0; gap:8px; flex-wrap:wrap;">
+                    <span><strong>${p.auditId}</strong> — ${p.unidade || '-'} / ${p.transportadora || '-'} <span style="color:#64748b;">(salvo em ${salvoEmTexto})</span></span>
+                    <button type="button" onclick="continuarPendente('${p.auditId}')" style="padding:4px 10px; font-size:11px; border:none; border-radius:4px; background:#005691; color:#fff; cursor:pointer;">Continuar aqui</button>
+                </div>`;
+            }).join('');
+
+            container.innerHTML = `<div style="background:#fff7ed; border:1px solid #fdba74; border-radius:6px; padding:8px 10px;">
+                <div style="font-weight:bold; font-size:12px; margin-bottom:4px;">☁ Auditorias pendentes salvas na nuvem</div>
+                ${itens}
+            </div>`;
+            container.style.display = 'block';
+        } catch (err) {
+            console.warn('Não foi possível verificar auditorias pendentes na nuvem.', err);
+        }
+    }
+
+    async function continuarPendente(auditId) {
+        try {
+            const resposta = await fetch(GOOGLE_SCRIPT_URL + '?action=carregarPendente&auditId=' + encodeURIComponent(auditId));
+            if (!resposta.ok) throw new Error('Resposta não OK do servidor (' + resposta.status + ')');
+            const json = await resposta.json();
+            if (!json || json.status !== 'success' || !json.rascunho) {
+                throw new Error((json && json.message) || 'Não foi possível carregar essa auditoria.');
+            }
+            restaurarRascunho(json.rascunho);
+        } catch (err) {
+            alert('Não foi possível continuar essa auditoria: ' + err.message);
+        }
+    }
+
     restaurarRascunho();
+    if (!auditStartTime) {
+        carregarListaPendentesNuvem();
+    }
 
     // Submissão do Formulário
     document.getElementById('auditForm').addEventListener('submit', function(e) {
@@ -1755,6 +1910,10 @@
 
             statusMsg.className = 'status-message success';
             statusMsg.textContent = `Auditoria enviada com sucesso! ID: ${data.auditId} | Tempo: ${data.tempoTotal}`;
+
+            // Auditoria concluída: some o botão de salvar progresso na nuvem (não há mais o que continuar)
+            document.getElementById('btnSalvarNuvem').style.display = 'none';
+            document.getElementById('statusNuvemMsg').textContent = '';
 
             // Botão para compartilhar o relatório por WhatsApp (se o PDF foi gerado com sucesso)
             const whatsappContainer = document.getElementById('whatsappShareContainer');
