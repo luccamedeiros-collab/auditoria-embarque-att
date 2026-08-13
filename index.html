@@ -708,7 +708,7 @@
             <div class="section-title">Análise Comportamental</div>
 
             <div class="score-preview">
-                <span>Score Comportamental Estimado:</span>
+                <span>Score Geral Estimado:</span>
                 <span id="scorePreviewBadge" class="score-badge">100%</span>
             </div>
             <div class="score-preview" style="margin-top: -6px;">
@@ -917,6 +917,17 @@
 
             <!-- Bloco Dinâmico exibido apenas se Divergência === Sim -->
             <div id="secaoDivergenciasCompleta">
+                <div class="form-group">
+                    <label for="divergenciaResponsavel">Responsável pela Divergência (Peso 4 - Penalidade) *</label>
+                    <select id="divergenciaResponsavel" name="divergenciaResponsavel" class="behavioral-resp-field">
+                        <option value="">Selecione...</option>
+                        <option value="Conferente">Conferente</option>
+                        <option value="Expedição">Expedição</option>
+                        <option value="Ambos">Ambos</option>
+                        <option value="N/A">N/A</option>
+                    </select>
+                </div>
+
                 <div class="form-group">
                     <label>Tipo de divergência *</label>
                     <div class="radio-group">
@@ -1273,6 +1284,7 @@
             } else {
                 secao.style.display = 'none';
             }
+            calculateLiveScore();
         });
     });
 
@@ -1433,6 +1445,8 @@
         { id: 'equipeResponsiva', weight: 2, label: '10. A equipe é responsiva em relação às ordens do conferente?', weightLabel: 'Peso 2' }
     ];
 
+    const PESO_PENALIDADE_DIVERGENCIA = 4;
+
     function calcularScorePorResponsavel(responsavelAlvo) {
         let obtido = 0, maximo = 0;
         behavioralFields.forEach(field => {
@@ -1445,6 +1459,18 @@
             if (val === 'Sim') { obtido += field.weight; maximo += field.weight; }
             else if (val === 'Não') { maximo += field.weight; }
         });
+
+        // Penalidade por divergência encontrada (Peso 4) — só entra no cálculo
+        // quando há divergência e um responsável foi indicado; conta como uma
+        // falha (soma no máximo, não no obtido) para quem foi apontado.
+        const divergenciaRadio = document.querySelector('input[name="divergencia"]:checked');
+        const divergenciaVal = divergenciaRadio ? divergenciaRadio.value : 'Não';
+        const divRespEl = document.getElementById('divergenciaResponsavel');
+        const divResp = divRespEl ? divRespEl.value : '';
+        if (divergenciaVal === 'Sim' && divResp && divResp !== 'N/A' && (divResp === 'Ambos' || divResp === responsavelAlvo)) {
+            maximo += PESO_PENALIDADE_DIVERGENCIA;
+        }
+
         return maximo > 0 ? Math.round((obtido / maximo) * 100) : null;
     }
 
@@ -1504,6 +1530,15 @@
         let scoreColor = !scoreEhValido ? '#64748b' : (scorePct >= 90 ? '#16a34a' : (scorePct >= 70 ? '#d97706' : '#dc2626'));
         let statusTexto = !scoreEhValido ? 'Sem itens avaliáveis (todos marcados N/A)' : (scorePct >= 90 ? 'Conforme / Excelência' : (scorePct >= 70 ? 'Atenção / Reorientação' : 'Não Conforme / Risco Crítico'));
         let scoreTexto = scoreEhValido ? scorePct + '%' : 'N/A';
+
+        function corParaScoreTexto(scoreStr) {
+            if (!scoreStr || scoreStr === 'N/A') return '#64748b';
+            const n = parseInt(String(scoreStr).replace('%', ''), 10);
+            if (isNaN(n)) return '#64748b';
+            return n >= 90 ? '#16a34a' : (n >= 70 ? '#d97706' : '#dc2626');
+        }
+        const corScoreConferente = corParaScoreTexto(data.scoreConferentePct);
+        const corScoreExpedicao = corParaScoreTexto(data.scoreExpedicaoPct);
 
         const reportHtml = `
             <!DOCTYPE html>
@@ -1574,7 +1609,7 @@
                 <!-- CARDS SUPERIORES COM DESTAQUE PARA O TEMPO TOTAL -->
                 <div class="score-container">
                     <div class="score-box">
-                        <span>Score Comportamental</span>
+                        <span>Score Geral</span>
                         <h2>${scoreTexto}</h2>
                     </div>
                     <div class="time-box">
@@ -1588,11 +1623,11 @@
                 </div>
 
                 <div class="score-container" style="margin-top: -10px;">
-                    <div class="score-box" style="background: #005691 !important;">
+                    <div class="score-box" style="background: ${corScoreConferente} !important;">
                         <span>Score Conferente</span>
                         <h2>${data.scoreConferentePct || 'N/A'}</h2>
                     </div>
-                    <div class="score-box" style="background: #005691 !important;">
+                    <div class="score-box" style="background: ${corScoreExpedicao} !important;">
                         <span>Score Expedição</span>
                         <h2>${data.scoreExpedicaoPct || 'N/A'}</h2>
                     </div>
@@ -1625,6 +1660,7 @@
                 <div class="section-title">2. Apuração de Divergências</div>
                 <p style="font-size: 11px;"><strong>Possui Divergência:</strong> ${data.divergencia}</p>
                 ${data.divergencia === 'Sim' ? `<p style="font-size: 11px;"><strong>Tipo de Divergência:</strong> ${data.tipoDivergencia || '-'}</p>` : ''}
+                ${data.divergencia === 'Sim' ? `<p style="font-size: 11px;"><strong>Responsável pela Divergência (Peso 4):</strong> ${data.divergenciaResponsavel || '-'}</p>` : ''}
 
                 ${listDivergencias.length > 0 ? `
                     <table class="report-table">
@@ -2097,6 +2133,13 @@
                 if (val === 'Sim') { obtido += field.weight; maximo += field.weight; }
                 else if (val === 'Não') { maximo += field.weight; }
             });
+
+            // Penalidade por divergência encontrada (Peso 4)
+            const divResp = data.divergenciaResponsavel;
+            if (data.divergencia === 'Sim' && divResp && divResp !== 'N/A' && (divResp === 'Ambos' || divResp === responsavelAlvo)) {
+                maximo += PESO_PENALIDADE_DIVERGENCIA;
+            }
+
             return maximo > 0 ? Math.round((obtido / maximo) * 100) : null;
         }
         const scoreConferentePct = calcularScorePorResponsavelFinal('Conferente');
