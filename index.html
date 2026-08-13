@@ -220,6 +220,17 @@
             margin-bottom: 8px;
         }
 
+        .audit-item .resp-label {
+            margin-top: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .behavioral-resp-field {
+            border-color: #cbd5e1;
+        }
+
         .score-preview {
             background: #e2e8f0;
             padding: 12px 16px;
@@ -700,6 +711,12 @@
                 <span>Score Comportamental Estimado:</span>
                 <span id="scorePreviewBadge" class="score-badge">100%</span>
             </div>
+            <div class="score-preview" style="margin-top: -6px;">
+                <span>Score Conferente:</span>
+                <span id="scoreConferentePreviewBadge" class="score-badge">N/A</span>
+                <span style="margin-left: 16px;">Score Expedição:</span>
+                <span id="scoreExpedicaoPreviewBadge" class="score-badge">N/A</span>
+            </div>
 
             <div class="audit-item">
                 <label for="contagemFisica">1. Contagem física do material realizada? (Peso 3 - Crítico)</label>
@@ -707,6 +724,14 @@
                     <option value="">Selecione...</option>
                     <option value="Sim">Sim</option>
                     <option value="Não">Não</option>
+                    <option value="N/A">N/A</option>
+                </select>
+                <label for="contagemFisicaResp" class="resp-label">Responsável pelo resultado:</label>
+                <select id="contagemFisicaResp" name="contagemFisicaResp" class="behavioral-resp-field">
+                    <option value="">Selecione...</option>
+                    <option value="Conferente">Conferente</option>
+                    <option value="Expedição">Expedição</option>
+                    <option value="Ambos">Ambos</option>
                     <option value="N/A">N/A</option>
                 </select>
             </div>
@@ -719,6 +744,14 @@
                     <option value="Não">Não</option>
                     <option value="N/A">N/A</option>
                 </select>
+                <label for="caixasLacradasResp" class="resp-label">Responsável pelo resultado:</label>
+                <select id="caixasLacradasResp" name="caixasLacradasResp" class="behavioral-resp-field">
+                    <option value="">Selecione...</option>
+                    <option value="Conferente">Conferente</option>
+                    <option value="Expedição">Expedição</option>
+                    <option value="Ambos">Ambos</option>
+                    <option value="N/A">N/A</option>
+                </select>
             </div>
 
             <div class="audit-item">
@@ -727,6 +760,14 @@
                     <option value="">Selecione...</option>
                     <option value="Sim">Sim</option>
                     <option value="Não">Não</option>
+                    <option value="N/A">N/A</option>
+                </select>
+                <label for="caixasPosicionadasResp" class="resp-label">Responsável pelo resultado:</label>
+                <select id="caixasPosicionadasResp" name="caixasPosicionadasResp" class="behavioral-resp-field">
+                    <option value="">Selecione...</option>
+                    <option value="Conferente">Conferente</option>
+                    <option value="Expedição">Expedição</option>
+                    <option value="Ambos">Ambos</option>
                     <option value="N/A">N/A</option>
                 </select>
             </div>
@@ -739,6 +780,14 @@
                     <option value="Não">Não</option>
                     <option value="N/A">N/A</option>
                 </select>
+                <label for="identificacaoCargaResp" class="resp-label">Responsável pelo resultado:</label>
+                <select id="identificacaoCargaResp" name="identificacaoCargaResp" class="behavioral-resp-field">
+                    <option value="">Selecione...</option>
+                    <option value="Conferente">Conferente</option>
+                    <option value="Expedição">Expedição</option>
+                    <option value="Ambos">Ambos</option>
+                    <option value="N/A">N/A</option>
+                </select>
             </div>
 
             <div class="audit-item">
@@ -747,6 +796,14 @@
                     <option value="">Selecione...</option>
                     <option value="Sim">Sim</option>
                     <option value="Não">Não</option>
+                    <option value="N/A">N/A</option>
+                </select>
+                <label for="materialDisponivelDocaResp" class="resp-label">Responsável pelo resultado:</label>
+                <select id="materialDisponivelDocaResp" name="materialDisponivelDocaResp" class="behavioral-resp-field">
+                    <option value="">Selecione...</option>
+                    <option value="Conferente">Conferente</option>
+                    <option value="Expedição">Expedição</option>
+                    <option value="Ambos">Ambos</option>
                     <option value="N/A">N/A</option>
                 </select>
             </div>
@@ -759,6 +816,14 @@
                     <option value="Não">Não</option>
                     <option value="N/A">N/A</option>
                 </select>
+                <label for="docaOrganizadaResp" class="resp-label">Responsável pelo resultado:</label>
+                <select id="docaOrganizadaResp" name="docaOrganizadaResp" class="behavioral-resp-field">
+                    <option value="">Selecione...</option>
+                    <option value="Conferente">Conferente</option>
+                    <option value="Expedição">Expedição</option>
+                    <option value="Ambos">Ambos</option>
+                    <option value="N/A">N/A</option>
+                </select>
             </div>
 
             <div class="audit-item">
@@ -767,6 +832,14 @@
                     <option value="">Selecione...</option>
                     <option value="Sim">Sim</option>
                     <option value="Não">Não</option>
+                    <option value="N/A">N/A</option>
+                </select>
+                <label for="conferenciaOrdemRomaneioResp" class="resp-label">Responsável pelo resultado:</label>
+                <select id="conferenciaOrdemRomaneioResp" name="conferenciaOrdemRomaneioResp" class="behavioral-resp-field">
+                    <option value="">Selecione...</option>
+                    <option value="Conferente">Conferente</option>
+                    <option value="Expedição">Expedição</option>
+                    <option value="Ambos">Ambos</option>
                     <option value="N/A">N/A</option>
                 </select>
             </div>
@@ -779,6 +852,14 @@
                     <option value="Não">Não</option>
                     <option value="N/A">N/A</option>
                 </select>
+                <label for="caixaSacoConservacaoResp" class="resp-label">Responsável pelo resultado:</label>
+                <select id="caixaSacoConservacaoResp" name="caixaSacoConservacaoResp" class="behavioral-resp-field">
+                    <option value="">Selecione...</option>
+                    <option value="Conferente">Conferente</option>
+                    <option value="Expedição">Expedição</option>
+                    <option value="Ambos">Ambos</option>
+                    <option value="N/A">N/A</option>
+                </select>
             </div>
 
             <div class="audit-item">
@@ -789,6 +870,14 @@
                     <option value="Não">Não</option>
                     <option value="N/A">N/A</option>
                 </select>
+                <label for="procedimentoPadraoResp" class="resp-label">Responsável pelo resultado:</label>
+                <select id="procedimentoPadraoResp" name="procedimentoPadraoResp" class="behavioral-resp-field">
+                    <option value="">Selecione...</option>
+                    <option value="Conferente">Conferente</option>
+                    <option value="Expedição">Expedição</option>
+                    <option value="Ambos">Ambos</option>
+                    <option value="N/A">N/A</option>
+                </select>
             </div>
 
             <div class="audit-item">
@@ -797,6 +886,14 @@
                     <option value="">Selecione...</option>
                     <option value="Sim">Sim</option>
                     <option value="Não">Não</option>
+                    <option value="N/A">N/A</option>
+                </select>
+                <label for="equipeResponsivaResp" class="resp-label">Responsável pelo resultado:</label>
+                <select id="equipeResponsivaResp" name="equipeResponsivaResp" class="behavioral-resp-field">
+                    <option value="">Selecione...</option>
+                    <option value="Conferente">Conferente</option>
+                    <option value="Expedição">Expedição</option>
+                    <option value="Ambos">Ambos</option>
                     <option value="N/A">N/A</option>
                 </select>
             </div>
@@ -1336,6 +1433,34 @@
         { id: 'equipeResponsiva', weight: 2, label: '10. A equipe é responsiva em relação às ordens do conferente?', weightLabel: 'Peso 2' }
     ];
 
+    function calcularScorePorResponsavel(responsavelAlvo) {
+        let obtido = 0, maximo = 0;
+        behavioralFields.forEach(field => {
+            const val = document.getElementById(field.id) ? document.getElementById(field.id).value : '';
+            const respEl = document.getElementById(field.id + 'Resp');
+            const resp = respEl ? respEl.value : '';
+            if (val === 'N/A' || resp === 'N/A' || resp === '') return;
+            const contaParaAlvo = resp === 'Ambos' || resp === responsavelAlvo;
+            if (!contaParaAlvo) return;
+            if (val === 'Sim') { obtido += field.weight; maximo += field.weight; }
+            else if (val === 'Não') { maximo += field.weight; }
+        });
+        return maximo > 0 ? Math.round((obtido / maximo) * 100) : null;
+    }
+
+    function atualizarBadgeScore(elId, pct) {
+        const badge = document.getElementById(elId);
+        if (pct === null) {
+            badge.textContent = 'N/A';
+            badge.style.backgroundColor = '#64748b';
+        } else {
+            badge.textContent = pct + '%';
+            if (pct >= 90) badge.style.backgroundColor = '#16a34a';
+            else if (pct >= 70) badge.style.backgroundColor = '#d97706';
+            else badge.style.backgroundColor = '#dc2626';
+        }
+    }
+
     function calculateLiveScore() {
         let totalObtainedWeight = 0;
         let totalMaxWeight = 0;
@@ -1357,17 +1482,19 @@
         if (totalMaxWeight === 0) {
             badge.textContent = 'N/A';
             badge.style.backgroundColor = '#64748b';
-            return;
+        } else {
+            let scorePct = Math.round((totalObtainedWeight / totalMaxWeight) * 100);
+            badge.textContent = scorePct + '%';
+            if (scorePct >= 90) badge.style.backgroundColor = '#16a34a';
+            else if (scorePct >= 70) badge.style.backgroundColor = '#d97706';
+            else badge.style.backgroundColor = '#dc2626';
         }
 
-        let scorePct = Math.round((totalObtainedWeight / totalMaxWeight) * 100);
-        badge.textContent = scorePct + '%';
-        if (scorePct >= 90) badge.style.backgroundColor = '#16a34a';
-        else if (scorePct >= 70) badge.style.backgroundColor = '#d97706';
-        else badge.style.backgroundColor = '#dc2626';
+        atualizarBadgeScore('scoreConferentePreviewBadge', calcularScorePorResponsavel('Conferente'));
+        atualizarBadgeScore('scoreExpedicaoPreviewBadge', calcularScorePorResponsavel('Expedição'));
     }
 
-    document.querySelectorAll('.behavioral-field').forEach(select => {
+    document.querySelectorAll('.behavioral-field, .behavioral-resp-field').forEach(select => {
         select.addEventListener('change', calculateLiveScore);
     });
 
@@ -1460,6 +1587,17 @@
                     </div>
                 </div>
 
+                <div class="score-container" style="margin-top: -10px;">
+                    <div class="score-box" style="background: #005691 !important;">
+                        <span>Score Conferente</span>
+                        <h2>${data.scoreConferentePct || 'N/A'}</h2>
+                    </div>
+                    <div class="score-box" style="background: #005691 !important;">
+                        <span>Score Expedição</span>
+                        <h2>${data.scoreExpedicaoPct || 'N/A'}</h2>
+                    </div>
+                </div>
+
                 <div class="section-title">1. Contexto Operacional</div>
                 <div class="grid">
                     <div class="grid-item"><strong>ID Auditoria:</strong> ${data.auditId || '-'}</div>
@@ -1542,13 +1680,15 @@
                             <th>Item Avaliado</th>
                             <th>Peso</th>
                             <th>Resposta</th>
+                            <th>Responsável</th>
                         </tr>
                     </thead>
                     <tbody>
                         ${behavioralFields.map(field => {
                             const resposta = data[field.id] || '-';
+                            const responsavel = data[field.id + 'Resp'] || '-';
                             const rowClass = resposta === 'Não' ? 'row-nao' : (resposta === 'Sim' ? 'row-sim' : '');
-                            return `<tr class="${rowClass}"><td>${field.label}</td><td>${field.weightLabel}</td><td><strong>${resposta}</strong></td></tr>`;
+                            return `<tr class="${rowClass}"><td>${field.label}</td><td>${field.weightLabel}</td><td><strong>${resposta}</strong></td><td>${responsavel}</td></tr>`;
                         }).join('')}
                     </tbody>
                 </table>
@@ -1635,10 +1775,35 @@
         }
     }
 
-    function limparRascunho() {
+    async function limparRascunho() {
+        let auditIdParaExcluir = null;
         if (storageAvailable) {
+            try {
+                const raw = localStorage.getItem(DRAFT_STORAGE_KEY);
+                if (raw) {
+                    const rascunho = JSON.parse(raw);
+                    auditIdParaExcluir = rascunho && rascunho.campos && rascunho.campos.auditId;
+                }
+            } catch (e) { /* ignora */ }
             try { localStorage.removeItem(DRAFT_STORAGE_KEY); } catch (e) { /* ignora */ }
         }
+
+        // Se essa auditoria já tinha sido salva na nuvem, remove o checkpoint também —
+        // senão ela continua aparecendo como "pendente" pra sempre em qualquer aparelho.
+        if (auditIdParaExcluir) {
+            try {
+                await fetch(GOOGLE_SCRIPT_URL + '?action=excluirPendente', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ auditId: auditIdParaExcluir }),
+                    keepalive: true
+                });
+            } catch (e) {
+                // Sem internet ou falha no servidor — não trava o descarte local,
+                // mas o checkpoint na nuvem pode continuar órfão até ser sobrescrito.
+            }
+        }
+
         // Recarregar a página é a forma mais segura de garantir que todo o
         // estado (timer, fieldset, linhas dinâmicas, fotos) volte ao zero.
         location.reload();
@@ -1797,13 +1962,17 @@
     }
 
     async function carregarListaPendentesNuvem() {
+        const container = document.getElementById('pendentesNuvemContainer');
         try {
             const resposta = await fetch(GOOGLE_SCRIPT_URL + '?action=listarPendentes');
             if (!resposta.ok) return;
             const json = await resposta.json();
-            if (!json || json.status !== 'success' || !Array.isArray(json.pendentes) || json.pendentes.length === 0) return;
+            if (!json || json.status !== 'success' || !Array.isArray(json.pendentes) || json.pendentes.length === 0) {
+                container.style.display = 'none';
+                container.innerHTML = '';
+                return;
+            }
 
-            const container = document.getElementById('pendentesNuvemContainer');
             const itens = json.pendentes.map(p => {
                 const salvoEmTexto = p.salvoEm ? new Date(p.salvoEm).toLocaleString('pt-BR') : '-';
                 return `<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 10px; border-bottom:1px solid #e2e8f0; gap:8px; flex-wrap:wrap;">
@@ -1828,7 +1997,11 @@
             if (!resposta.ok) throw new Error('Resposta não OK do servidor (' + resposta.status + ')');
             const json = await resposta.json();
             if (!json || json.status !== 'success' || !json.rascunho) {
-                throw new Error((json && json.message) || 'Não foi possível carregar essa auditoria.');
+                // Não encontrada: provavelmente essa auditoria já foi enviada ou descartada
+                // em outro aparelho. Atualiza a lista pra tirar esse item da tela.
+                await carregarListaPendentesNuvem();
+                alert('Essa auditoria não está mais disponível — provavelmente já foi enviada ou descartada em outro aparelho. A lista foi atualizada.');
+                return;
             }
             restaurarRascunho(json.rascunho);
         } catch (err) {
@@ -1910,6 +2083,26 @@
         // mostrar "100%" nesse caso passaria a falsa impressão de auditoria perfeita.
         let scorePct = totalMaxWeight > 0 ? Math.round((totalObtainedWeight / totalMaxWeight) * 100) : null;
         data.scoreComportamentalPct = scorePct !== null ? scorePct + '%' : 'N/A (todos os itens marcados como não aplicável)';
+
+        // Cálculo dos scores por responsável (Conferente / Expedição), com base
+        // no responsável indicado pelo auditor em cada item do checklist
+        function calcularScorePorResponsavelFinal(responsavelAlvo) {
+            let obtido = 0, maximo = 0;
+            behavioralFields.forEach(field => {
+                const val = data[field.id];
+                const resp = data[field.id + 'Resp'];
+                if (val === 'N/A' || !resp || resp === 'N/A') return;
+                const contaParaAlvo = resp === 'Ambos' || resp === responsavelAlvo;
+                if (!contaParaAlvo) return;
+                if (val === 'Sim') { obtido += field.weight; maximo += field.weight; }
+                else if (val === 'Não') { maximo += field.weight; }
+            });
+            return maximo > 0 ? Math.round((obtido / maximo) * 100) : null;
+        }
+        const scoreConferentePct = calcularScorePorResponsavelFinal('Conferente');
+        const scoreExpedicaoPct = calcularScorePorResponsavelFinal('Expedição');
+        data.scoreConferentePct = scoreConferentePct !== null ? scoreConferentePct + '%' : 'N/A';
+        data.scoreExpedicaoPct = scoreExpedicaoPct !== null ? scoreExpedicaoPct + '%' : 'N/A';
 
         try {
             openReportWindow(data, scorePct, listDivergencias, listPlanosAcao, listResponsaveis, selectedAuditPhotos);
