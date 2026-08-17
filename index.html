@@ -274,6 +274,22 @@
             border: 1px solid var(--border-color);
         }
 
+        .divergencia-row .tipo-divergencia-block,
+        .divergencia-row .divergencia-header-block {
+            flex: 1 1 100%;
+            padding-bottom: 10px;
+            margin-bottom: 6px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .divergencia-row .tipo-divergencia-block label:first-child,
+        .divergencia-row .divergencia-header-block label:first-child {
+            display: block;
+            font-weight: 600;
+            color: var(--krona-blue);
+            margin-bottom: 4px;
+        }
+
         .plano-acao-row {
             align-items: flex-start;
         }
@@ -719,7 +735,7 @@
             </div>
 
             <div class="audit-item">
-                <label for="contagemFisica">1. Contagem física do material realizada? (Peso 3 - Crítico)</label>
+                <label for="contagemFisica">1. Contagem física do material realizada? (Criticidade Alta)</label>
                 <select id="contagemFisica" name="contagemFisica" class="behavioral-field" required>
                     <option value="">Selecione...</option>
                     <option value="Sim">Sim</option>
@@ -737,7 +753,7 @@
             </div>
 
             <div class="audit-item">
-                <label for="caixasLacradas">2. Caixas/Ráfias devidamente lacradas e etiquetadas (Peso 2)</label>
+                <label for="caixasLacradas">2. Caixas/Ráfias devidamente lacradas e etiquetadas (Criticidade Média)</label>
                 <select id="caixasLacradas" name="caixasLacradas" class="behavioral-field" required>
                     <option value="">Selecione...</option>
                     <option value="Sim">Sim</option>
@@ -755,7 +771,7 @@
             </div>
 
             <div class="audit-item">
-                <label for="caixasPosicionadas">3. Caixas/Ráfias posicionadas de forma organizada no Pallet/Aramado (Peso 2)</label>
+                <label for="caixasPosicionadas">3. Caixas/Ráfias posicionadas de forma organizada no Pallet/Aramado (Criticidade Média)</label>
                 <select id="caixasPosicionadas" name="caixasPosicionadas" class="behavioral-field" required>
                     <option value="">Selecione...</option>
                     <option value="Sim">Sim</option>
@@ -773,7 +789,7 @@
             </div>
 
             <div class="audit-item">
-                <label for="identificacaoCarga">4. Identificação de carga preenchida corretamente? (Peso 1)</label>
+                <label for="identificacaoCarga">4. Identificação de carga preenchida corretamente? (Criticidade Baixa)</label>
                 <select id="identificacaoCarga" name="identificacaoCarga" class="behavioral-field" required>
                     <option value="">Selecione...</option>
                     <option value="Sim">Sim</option>
@@ -791,7 +807,7 @@
             </div>
 
             <div class="audit-item">
-                <label for="materialDisponivelDoca">5. Material completo disponível em doca? (Peso 2)</label>
+                <label for="materialDisponivelDoca">5. Material completo disponível em doca? (Criticidade Média)</label>
                 <select id="materialDisponivelDoca" name="materialDisponivelDoca" class="behavioral-field" required>
                     <option value="">Selecione...</option>
                     <option value="Sim">Sim</option>
@@ -809,7 +825,7 @@
             </div>
 
             <div class="audit-item">
-                <label for="docaOrganizada">6. Doca organizada sem mistura de pedidos? (Peso 2)</label>
+                <label for="docaOrganizada">6. Doca organizada sem mistura de pedidos? (Criticidade Média)</label>
                 <select id="docaOrganizada" name="docaOrganizada" class="behavioral-field" required>
                     <option value="">Selecione...</option>
                     <option value="Sim">Sim</option>
@@ -827,7 +843,7 @@
             </div>
 
             <div class="audit-item">
-                <label for="conferenciaOrdemRomaneio">7. Conferência realizada na ordem do romaneio? (Peso 2)</label>
+                <label for="conferenciaOrdemRomaneio">7. Conferência realizada na ordem do romaneio? (Criticidade Média)</label>
                 <select id="conferenciaOrdemRomaneio" name="conferenciaOrdemRomaneio" class="behavioral-field" required>
                     <option value="">Selecione...</option>
                     <option value="Sim">Sim</option>
@@ -845,7 +861,7 @@
             </div>
 
             <div class="audit-item">
-                <label for="caixaSacoConservacao">8. Caixa/Saco em bom estado de conservação? (Peso 2)</label>
+                <label for="caixaSacoConservacao">8. Caixa/Saco em bom estado de conservação? (Criticidade Média)</label>
                 <select id="caixaSacoConservacao" name="caixaSacoConservacao" class="behavioral-field" required>
                     <option value="">Selecione...</option>
                     <option value="Sim">Sim</option>
@@ -863,7 +879,7 @@
             </div>
 
             <div class="audit-item">
-                <label for="procedimentoPadrao">9. O conferente seguiu o procedimento padrão definido pela Krona? (Peso 3 - Crítico)</label>
+                <label for="procedimentoPadrao">9. O conferente seguiu o procedimento padrão definido pela Krona? (Criticidade Alta)</label>
                 <select id="procedimentoPadrao" name="procedimentoPadrao" class="behavioral-field" required>
                     <option value="">Selecione...</option>
                     <option value="Sim">Sim</option>
@@ -881,7 +897,7 @@
             </div>
 
             <div class="audit-item">
-                <label for="equipeResponsiva">10. A equipe é responsiva em relação às ordens do conferente? (Peso 2)</label>
+                <label for="equipeResponsiva">10. A equipe é responsiva em relação às ordens do conferente? (Criticidade Média)</label>
                 <select id="equipeResponsiva" name="equipeResponsiva" class="behavioral-field" required>
                     <option value="">Selecione...</option>
                     <option value="Sim">Sim</option>
@@ -917,25 +933,6 @@
 
             <!-- Bloco Dinâmico exibido apenas se Divergência === Sim -->
             <div id="secaoDivergenciasCompleta">
-                <div class="form-group">
-                    <label for="divergenciaResponsavel">Responsável pela Divergência (Peso 4 - Penalidade) *</label>
-                    <select id="divergenciaResponsavel" name="divergenciaResponsavel" class="behavioral-resp-field">
-                        <option value="">Selecione...</option>
-                        <option value="Conferente">Conferente</option>
-                        <option value="Expedição">Expedição</option>
-                        <option value="Ambos">Ambos</option>
-                        <option value="N/A">N/A</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Tipo de divergência *</label>
-                    <div class="radio-group">
-                        <label><input type="radio" name="tipoDivergencia" value="Divergência com erro"> Divergência com erro</label>
-                        <label><input type="radio" name="tipoDivergencia" value="Divergência de padronização"> Divergência de padronização</label>
-                    </div>
-                </div>
-
                 <div id="secaoMotivosDivergencia">
                     <div style="font-weight: bold; color: var(--krona-blue); margin-bottom: 8px;">Motivos de Divergência</div>
                     <p style="font-size: 0.85rem; color: #666; margin-bottom: 15px;">Adicione os motivos encontrados durante a verificação.</p>
@@ -1298,6 +1295,23 @@
         div.className = 'divergencia-row';
         div.dataset.divId = divId;
         div.innerHTML = `
+            <div class="divergencia-header-block">
+                <label for="divergenciaResponsavel_${divId}">Responsável pela Divergência (Peso 4 - Penalidade) *</label>
+                <select id="divergenciaResponsavel_${divId}" class="select-divergencia-responsavel behavioral-resp-field" required>
+                    <option value="">Selecione...</option>
+                    <option value="Conferente">Conferente</option>
+                    <option value="Expedição">Expedição</option>
+                    <option value="Ambos">Ambos</option>
+                    <option value="N/A">N/A</option>
+                </select>
+            </div>
+            <div class="tipo-divergencia-block">
+                <label>Tipo de divergência *</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="tipoDivergencia_${divId}" value="Divergência com erro"> Divergência com erro</label>
+                    <label><input type="radio" name="tipoDivergencia_${divId}" value="Divergência de padronização"> Divergência de padronização</label>
+                </div>
+            </div>
             <select class="select-macro" name="motivoMacro">
                 <option value="">Motivo Macro...</option>
                 ${MOTIVOS_MACRO.map(m => `<option value="${m}">${m}</option>`).join('')}
@@ -1315,6 +1329,8 @@
         div.querySelector('.select-macro').addEventListener('change', () => { refreshPlanoAcaoSelects(); salvarRascunho(); });
         div.querySelector('.select-micro').addEventListener('change', salvarRascunho);
         div.querySelector('.input-outro').addEventListener('input', salvarRascunhoDebounced);
+        div.querySelectorAll('input[type="radio"]').forEach(r => r.addEventListener('change', salvarRascunho));
+        div.querySelector('.select-divergencia-responsavel').addEventListener('change', () => { calculateLiveScore(); salvarRascunho(); });
         refreshPlanoAcaoSelects();
         salvarRascunho();
     }
@@ -1322,6 +1338,7 @@
     function removeDivergenciaRow(button) {
         button.closest('.divergencia-row').remove();
         refreshPlanoAcaoSelects();
+        calculateLiveScore();
         salvarRascunho();
     }
 
@@ -1433,19 +1450,30 @@
 
     // Cálculo em Tempo Real do Score Comportamental
     const behavioralFields = [
-        { id: 'contagemFisica', weight: 3, label: '1. Contagem física do material realizada?', weightLabel: 'Peso 3 (Crítico)' },
-        { id: 'caixasLacradas', weight: 2, label: '2. Caixas/Ráfias devidamente lacradas e etiquetadas', weightLabel: 'Peso 2' },
-        { id: 'caixasPosicionadas', weight: 2, label: '3. Caixas/Ráfias posicionadas de forma organizada no Pallet/Aramado', weightLabel: 'Peso 2' },
-        { id: 'identificacaoCarga', weight: 1, label: '4. Identificação de carga preenchida corretamente?', weightLabel: 'Peso 1' },
-        { id: 'materialDisponivelDoca', weight: 2, label: '5. Material completo disponível em doca?', weightLabel: 'Peso 2' },
-        { id: 'docaOrganizada', weight: 2, label: '6. Doca organizada sem mistura de pedidos?', weightLabel: 'Peso 2' },
-        { id: 'conferenciaOrdemRomaneio', weight: 2, label: '7. Conferência realizada na ordem do romaneio?', weightLabel: 'Peso 2' },
-        { id: 'caixaSacoConservacao', weight: 2, label: '8. Caixa/Saco em bom estado de conservação?', weightLabel: 'Peso 2' },
-        { id: 'procedimentoPadrao', weight: 3, label: '9. O conferente seguiu o procedimento padrão definido pela Krona?', weightLabel: 'Peso 3 (Crítico)' },
-        { id: 'equipeResponsiva', weight: 2, label: '10. A equipe é responsiva em relação às ordens do conferente?', weightLabel: 'Peso 2' }
+        { id: 'contagemFisica', weight: 3, label: '1. Contagem física do material realizada?', weightLabel: 'Criticidade Alta' },
+        { id: 'caixasLacradas', weight: 2, label: '2. Caixas/Ráfias devidamente lacradas e etiquetadas', weightLabel: 'Criticidade Média' },
+        { id: 'caixasPosicionadas', weight: 2, label: '3. Caixas/Ráfias posicionadas de forma organizada no Pallet/Aramado', weightLabel: 'Criticidade Média' },
+        { id: 'identificacaoCarga', weight: 1, label: '4. Identificação de carga preenchida corretamente?', weightLabel: 'Criticidade Baixa' },
+        { id: 'materialDisponivelDoca', weight: 2, label: '5. Material completo disponível em doca?', weightLabel: 'Criticidade Média' },
+        { id: 'docaOrganizada', weight: 2, label: '6. Doca organizada sem mistura de pedidos?', weightLabel: 'Criticidade Média' },
+        { id: 'conferenciaOrdemRomaneio', weight: 2, label: '7. Conferência realizada na ordem do romaneio?', weightLabel: 'Criticidade Média' },
+        { id: 'caixaSacoConservacao', weight: 2, label: '8. Caixa/Saco em bom estado de conservação?', weightLabel: 'Criticidade Média' },
+        { id: 'procedimentoPadrao', weight: 3, label: '9. O conferente seguiu o procedimento padrão definido pela Krona?', weightLabel: 'Criticidade Alta' },
+        { id: 'equipeResponsiva', weight: 2, label: '10. A equipe é responsiva em relação às ordens do conferente?', weightLabel: 'Criticidade Média' }
     ];
 
     const PESO_PENALIDADE_DIVERGENCIA = 4;
+
+    // Lê todas as divergências atuais na tela e retorna o responsável (Conferente/Expedição/Ambos/N/A)
+    // indicado em cada uma — só conta as que já têm responsável selecionado. Cada divergência com
+    // responsável identificado soma Peso 4 de penalidade (uma penalidade por divergência, não uma só pra auditoria toda).
+    function listarResponsaveisDivergencias() {
+        const divergenciaRadio = document.querySelector('input[name="divergencia"]:checked');
+        if (!divergenciaRadio || divergenciaRadio.value !== 'Sim') return [];
+        return Array.from(document.querySelectorAll('.divergencia-row'))
+            .map(row => (row.querySelector('.select-divergencia-responsavel') || {}).value || '')
+            .filter(v => v !== '');
+    }
 
     function calcularScorePorResponsavel(responsavelAlvo) {
         let obtido = 0, maximo = 0;
@@ -1460,16 +1488,13 @@
             else if (val === 'Não') { maximo += field.weight; }
         });
 
-        // Penalidade por divergência encontrada (Peso 4) — só entra no cálculo
-        // quando há divergência e um responsável foi indicado; conta como uma
-        // falha (soma no máximo, não no obtido) para quem foi apontado.
-        const divergenciaRadio = document.querySelector('input[name="divergencia"]:checked');
-        const divergenciaVal = divergenciaRadio ? divergenciaRadio.value : 'Não';
-        const divRespEl = document.getElementById('divergenciaResponsavel');
-        const divResp = divRespEl ? divRespEl.value : '';
-        if (divergenciaVal === 'Sim' && divResp && divResp !== 'N/A' && (divResp === 'Ambos' || divResp === responsavelAlvo)) {
-            maximo += PESO_PENALIDADE_DIVERGENCIA;
-        }
+        // Penalidade por divergência (Peso 4) — uma penalidade por divergência que
+        // tenha esse responsável (ou "Ambos"), soma no máximo (não no obtido).
+        listarResponsaveisDivergencias().forEach(resp => {
+            if (resp !== 'N/A' && (resp === 'Ambos' || resp === responsavelAlvo)) {
+                maximo += PESO_PENALIDADE_DIVERGENCIA;
+            }
+        });
 
         return maximo > 0 ? Math.round((obtido / maximo) * 100) : null;
     }
@@ -1499,6 +1524,10 @@
                 else if (val === 'Não') { totalMaxWeight += field.weight; }
             }
         });
+
+        // Penalidade geral por divergência (Peso 4 cada) — toda divergência com responsável
+        // identificado penaliza o Score Geral, independente de quem foi o responsável.
+        totalMaxWeight += listarResponsaveisDivergencias().length * PESO_PENALIDADE_DIVERGENCIA;
 
         const badge = document.getElementById('scorePreviewBadge');
 
@@ -1659,16 +1688,14 @@
 
                 <div class="section-title">2. Apuração de Divergências</div>
                 <p style="font-size: 11px;"><strong>Possui Divergência:</strong> ${data.divergencia}</p>
-                ${data.divergencia === 'Sim' ? `<p style="font-size: 11px;"><strong>Tipo de Divergência:</strong> ${data.tipoDivergencia || '-'}</p>` : ''}
-                ${data.divergencia === 'Sim' ? `<p style="font-size: 11px;"><strong>Responsável pela Divergência (Peso 4):</strong> ${data.divergenciaResponsavel || '-'}</p>` : ''}
 
                 ${listDivergencias.length > 0 ? `
                     <table class="report-table">
                         <thead>
-                            <tr><th>#</th><th>Motivo Macro</th><th>Motivo Micro</th><th>Detalhes</th></tr>
+                            <tr><th>#</th><th>Resp. Divergência</th><th>Tipo</th><th>Motivo Macro</th><th>Motivo Micro</th><th>Detalhes</th></tr>
                         </thead>
                         <tbody>
-                            ${listDivergencias.map(d => `<tr><td>${d.id}</td><td>${d.macro}</td><td>${d.micro}</td><td>${d.outro}</td></tr>`).join('')}
+                            ${listDivergencias.map(d => `<tr><td>${d.id}</td><td>${d.responsavel || '-'}</td><td>${d.tipo || '-'}</td><td>${d.macro}</td><td>${d.micro}</td><td>${d.outro}</td></tr>`).join('')}
                         </tbody>
                     </table>
                 ` : ''}
@@ -1714,7 +1741,7 @@
                     <thead>
                         <tr>
                             <th>Item Avaliado</th>
-                            <th>Peso</th>
+                            <th>Criticidade</th>
                             <th>Resposta</th>
                             <th>Responsável</th>
                         </tr>
@@ -1762,6 +1789,8 @@
 
         const divergencias = Array.from(document.querySelectorAll('.divergencia-row')).map(row => ({
             divId: row.dataset.divId,
+            responsavel: (row.querySelector('.select-divergencia-responsavel') || {}).value || '',
+            tipo: (row.querySelector('input[type="radio"]:checked') || {}).value || '',
             macro: row.querySelector('.select-macro').value,
             micro: row.querySelector('.select-micro').value,
             outro: row.querySelector('.input-outro').value
@@ -1898,6 +1927,12 @@
             addDivergenciaRow();
             const row = document.querySelector('#divergenciasContainer .divergencia-row:last-child');
             row.dataset.divId = d.divId;
+            const selResp = row.querySelector('.select-divergencia-responsavel');
+            if (selResp && d.responsavel) selResp.value = d.responsavel;
+            if (d.tipo) {
+                const radio = row.querySelector(`input[type="radio"][value="${d.tipo}"]`);
+                if (radio) radio.checked = true;
+            }
             row.querySelector('.select-macro').value = d.macro || '';
             row.querySelector('.select-micro').value = d.micro || '';
             row.querySelector('.input-outro').value = d.outro || '';
@@ -2071,10 +2106,12 @@
         const listDivergencias = [];
         if (data.divergencia === 'Sim') {
             document.querySelectorAll('.divergencia-row').forEach(row => {
+                const responsavel = (row.querySelector('.select-divergencia-responsavel') || {}).value || '';
+                const tipo = (row.querySelector('input[type="radio"]:checked') || {}).value || '';
                 const macro = row.querySelector('.select-macro').value;
                 const micro = row.querySelector('.select-micro').value;
                 const outro = row.querySelector('.input-outro').value;
-                if (macro || micro || outro) listDivergencias.push({ id: row.dataset.divId, macro, micro, outro });
+                if (responsavel || tipo || macro || micro || outro) listDivergencias.push({ id: row.dataset.divId, responsavel, tipo, macro, micro, outro });
             });
         }
         data.listaDivergencias = JSON.stringify(listDivergencias);
@@ -2115,6 +2152,11 @@
             else if (val === 'Não') { totalMaxWeight += field.weight; }
         });
 
+        // Penalidade geral por divergência (Peso 4 cada) — toda divergência com responsável
+        // identificado penaliza o Score Geral, independente de quem foi o responsável.
+        const divergenciasComResponsavel = listDivergencias.filter(d => d.responsavel);
+        totalMaxWeight += divergenciasComResponsavel.length * PESO_PENALIDADE_DIVERGENCIA;
+
         // Se todos os itens foram marcados "N/A", não há base para calcular um score —
         // mostrar "100%" nesse caso passaria a falsa impressão de auditoria perfeita.
         let scorePct = totalMaxWeight > 0 ? Math.round((totalObtainedWeight / totalMaxWeight) * 100) : null;
@@ -2134,11 +2176,13 @@
                 else if (val === 'Não') { maximo += field.weight; }
             });
 
-            // Penalidade por divergência encontrada (Peso 4)
-            const divResp = data.divergenciaResponsavel;
-            if (data.divergencia === 'Sim' && divResp && divResp !== 'N/A' && (divResp === 'Ambos' || divResp === responsavelAlvo)) {
-                maximo += PESO_PENALIDADE_DIVERGENCIA;
-            }
+            // Penalidade por divergência (Peso 4) — uma penalidade por divergência que
+            // tenha esse responsável (ou "Ambos"), soma no máximo (não no obtido).
+            divergenciasComResponsavel.forEach(d => {
+                if (d.responsavel !== 'N/A' && (d.responsavel === 'Ambos' || d.responsavel === responsavelAlvo)) {
+                    maximo += PESO_PENALIDADE_DIVERGENCIA;
+                }
+            });
 
             return maximo > 0 ? Math.round((obtido / maximo) * 100) : null;
         }
