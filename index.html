@@ -914,6 +914,24 @@
                 </select>
             </div>
 
+            <div class="audit-item">
+                <label for="conferenteColouEtiqueta">11. O conferente que colou a etiqueta? (Criticidade Média)</label>
+                <select id="conferenteColouEtiqueta" name="conferenteColouEtiqueta" class="behavioral-field" required>
+                    <option value="">Selecione...</option>
+                    <option value="Sim">Sim</option>
+                    <option value="Não">Não</option>
+                    <option value="N/A">N/A</option>
+                </select>
+                <label for="conferenteColouEtiquetaResp" class="resp-label">Responsável pelo resultado:</label>
+                <select id="conferenteColouEtiquetaResp" name="conferenteColouEtiquetaResp" class="behavioral-resp-field">
+                    <option value="">Selecione...</option>
+                    <option value="Conferente">Conferente</option>
+                    <option value="Expedição">Expedição</option>
+                    <option value="Ambos">Ambos</option>
+                    <option value="N/A">N/A</option>
+                </select>
+            </div>
+
             <!-- Observações do Auditor / Desvios Comportamentais -->
             <div class="form-group full-width" style="margin-top: 15px;">
                 <label for="observacoesAuditor">Registro de desvios comportamentais / Observações do auditor responsável</label>
@@ -1459,7 +1477,8 @@
         { id: 'conferenciaOrdemRomaneio', weight: 2, label: '7. Conferência realizada na ordem do romaneio?', weightLabel: 'Criticidade Média' },
         { id: 'caixaSacoConservacao', weight: 2, label: '8. Caixa/Saco em bom estado de conservação?', weightLabel: 'Criticidade Média' },
         { id: 'procedimentoPadrao', weight: 3, label: '9. O conferente seguiu o procedimento padrão definido pela Krona?', weightLabel: 'Criticidade Alta' },
-        { id: 'equipeResponsiva', weight: 2, label: '10. A equipe é responsiva em relação às ordens do conferente?', weightLabel: 'Criticidade Média' }
+        { id: 'equipeResponsiva', weight: 2, label: '10. A equipe é responsiva em relação às ordens do conferente?', weightLabel: 'Criticidade Média' },
+        { id: 'conferenteColouEtiqueta', weight: 2, label: '11. O conferente que colou a etiqueta?', weightLabel: 'Criticidade Média' }
     ];
 
     const PESO_PENALIDADE_DIVERGENCIA = 4;
